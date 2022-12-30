@@ -11,10 +11,14 @@ func main() {
 	log.Println("Creating server instance in port 8000")
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		b, _ := ioutil.ReadAll(r.Body)
-		log.Println(string(b))
+		b, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			http.Error(w, "SOmething went wrong", http.StatusBadGateway)
+			return
+		}
 
 		fmt.Fprintf(w, "Relaying message : %s", b)
+		w.WriteHeader(http.StatusOK)
 		log.Println("Hello World")
 	})
 
